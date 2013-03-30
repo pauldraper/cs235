@@ -1,0 +1,38 @@
+LAB_NAME=lab$(LAB_NUM)
+
+EXEC=$(LAB_NAME)
+
+ZIP=$(LAB_NAME).zip
+
+CC=g++
+CFLAGS=-g -Wall
+SRC=*.cpp
+
+all: $(EXEC)
+
+run: all $(FILES)
+	./$(EXEC) $(ARGS)
+	@head -n 100 $(FILES)
+
+test: all $(TEST_FILES)
+	./$(EXEC) $(TEST_ARGS)
+	@head -n 100 $(TEST_FILES)
+
+quality: $(SRC)
+	@pmccabe $(SRC)
+
+memcheck: all $(FILES)
+	valgrind --leak-check=full --track-origins=yes --trace-children=yes ./$(EXEC) $(FILES)
+
+zip: Makefile $(SRC) $(TEST_FILES)
+	zip $(ZIP) $(SRC) $(TEST_FILES)
+
+#easy_install --install-dir ~/lib mechanize
+submit: ../submit.py zip
+	python ../submit.py $(LAB_NUM) $(ZIP)
+
+clean:
+	rm -f $(EXEC) $(ZIP) *~
+
+$(EXEC): $(SRC)
+	@$(CC) $(CCFLAGS) $(SRC) -o $(EXEC)
