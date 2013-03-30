@@ -1,0 +1,11 @@
+*.*
+
+!.*
+!*.md
+!*.py
+!Makefile*
+!Makefile
+!*0*.txt
+
+*/lab*
+secret.py
